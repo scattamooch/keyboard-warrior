@@ -1,0 +1,23 @@
+.competitive-mode {
+    visibility: hidden;
+    height: auto;
+    overflow: hidden;
+  }
+  
+  .competitive-mode.visible {
+    visibility: visible;
+    height: auto;
+    overflow: visible;
+  }
+
+  .countdown {
+    visibility: hidden;
+    height: auto;
+    overflow: hidden;
+  }
+  
+  .countdown.visible {
+    visibility: visible;
+    height: auto;
+    overflow: visible;
+  }

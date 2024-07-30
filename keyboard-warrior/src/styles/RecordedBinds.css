@@ -1,0 +1,75 @@
+.top-buttons-container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+button:active {
+    background-color: lightblue;
+}
+
+.record-icon {
+    flex-shrink: 0;
+}
+
+/* app.css */
+
+.recorded-binds-container {
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.recorded-binds-content {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+}
+
+.recorded-binds-content.visible {
+  visibility: visible;
+  height: auto;
+  overflow: visible;
+}
+  
+.keybinds-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-height: 200px; /* Adjust the height as needed */
+  height: 200px;
+  max-width: 1200px;
+  width: 1200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+
+.keybind {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-height: 30px;
+  max-width: 200px;
+  padding: 5px; /* Adjust padding as needed */
+  border: 1px solid #ccc; /* Add a border if desired */
+  border-radius: 4px; /* Add border-radius if desired */
+  background-color: #f9f9f9; /* Add background color if desired */
+}
+
+.delete-bind {
+  margin-left: 10px; /* Adjust margin as needed */
+  background-color: darkgray; /* Add background color if desired */
+  color: white; /* Add text color if desired */
+  border: none; /* Remove default border */
+  padding: 5px; /* Adjust padding as needed */
+  border-radius: 3px; /* Add border-radius if desired */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+.delete-bind:hover {
+  background-color: red; /* Add hover effect if desired */
+}

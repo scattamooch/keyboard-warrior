@@ -1,0 +1,25 @@
+.results-container {
+    width: 300px;
+    height: 600px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: left;
+  }
+
+.button-and-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.reset-button {
+    margin-left: 25px;
+    height: 50px;
+    margin-top: 14px;
+}
+
+ul {
+    list-style: none;
+  }

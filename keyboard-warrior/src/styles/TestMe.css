@@ -1,0 +1,13 @@
+.test-window {
+font-size: 24pt;
+}
+
+.test-window.invisible {
+    visibility: hidden;
+    opacity: 0;
+  }
+  
+  .test-window.visible {
+    visibility: visible;
+    opacity: 1;
+  }

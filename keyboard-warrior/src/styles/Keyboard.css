@@ -1,0 +1,68 @@
+.keyboard-container {
+    display: flex;
+    justify-content: center;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .numpad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+  }
+  
+  .keyboard-row {
+    display: flex;
+  }
+  
+  .keyboard-key {
+    width: 50px;
+    height: 50px;
+    margin: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: background-color 0.1s;
+  }
+  
+  .keyboard-key.pressed {
+    background-color: #ccc;
+  }
+  
+  .keyboard-key.large {
+    height: 102px;
+  }
+  
+  /* Specific key widths for larger keys */
+  .keyboard-key[aria-label="Backspace"],
+  .keyboard-key[aria-label="Tab"],
+  .keyboard-key[aria-label="Caps Lock"],
+  .keyboard-key[aria-label="Enter"],
+  .keyboard-key[aria-label="Shift (L)"],
+  .keyboard-key[aria-label="Shift (R)"],
+  .keyboard-key[aria-label="Ctrl (L)"],
+  .keyboard-key[aria-label="Alt (L)"],
+  .keyboard-key[aria-label="Space"],
+  .keyboard-key[aria-label="Ctrl (R)"],
+  .keyboard-key[aria-label="Alt (R)"],
+  .keyboard-key[aria-label="Win"],
+  .keyboard-key[aria-label="Fn"],
+  .keyboard-key[aria-label="Menu"] {
+    width: auto;
+    flex: 1;
+  }
+  
+  .keyboard-key[aria-label="Space"] {
+    flex: 5;
+  }
+  
