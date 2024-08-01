@@ -12,7 +12,7 @@ function ComingSoonModal({ onClose }) {
             <h2 className="soon-header">In the works:</h2>
             <ol className="coming-soon">
                 <li className="soon-item">
-                    Competitive Mode: no keybind recording. Just a 30-second timer where you try to hit as many random keybinds as you can. Complete with leaderboard.
+                    Finish filling out keybind database(s)
                 </li>
                 <li className="soon-item">
                     Keybind practice for specific games. Pick a game and the trainer will tailor itself to that specific game. Ex: World of Warcraft, choose a class and that class' 

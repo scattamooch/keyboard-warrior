@@ -11,7 +11,6 @@ function Leaderboard({ onClose }) {
                 // Sort the data by score in descending order
                 const sortedData = data.sort((a, b) => b.score - a.score);
                 setLeaderboard(sortedData);
-                console.log("data:", sortedData);
             })
             .catch(error => console.error('Error fetching leaderboard:', error));
     }, []);

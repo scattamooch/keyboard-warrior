@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Keyboard from './components/Keyboard';
 import Results from './components/Results';
 import RecordedBinds from './components/RecordedBinds';
@@ -8,6 +8,7 @@ import BugModal from "./components/BugModal";
 import ComingSoonModal from "./components/ComingSoonModal";
 import CompetitiveMode from "./components/CompetitiveMode";
 import Leaderboard from "./components/Leaderboard";
+import SubmitScoreModal from "./components/SubmitScoreModal";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import './App.css';
@@ -20,6 +21,9 @@ function App() {
   const [soonModal, setSoonModal] = useState(false);
   const [trophyModal, setTrophyModal] = useState(false);
   const [gameMode, setGameMode] = useState(false);
+  const [retrievedScore, setRetrievedScore] = useState(0);
+  const [scoreSubmission, setScoreSubmission] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false); // New state to track game end
 
   const HelpIcon = (
     <svg 
@@ -36,19 +40,6 @@ function App() {
       <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
       <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
-  );
-  const ExitIcon = (
-    <svg 
-    class="help-icon"  
-    width="24" height="24" 
-    viewBox="0 0 24 24" 
-    stroke-width="2" 
-    stroke="currentColor" 
-    fill="none" 
-    stroke-linecap="round" 
-    stroke-linejoin="round"
-    onClick={() => setModal(false)}
-    >  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
   );
   const BugIcon =(
     <svg 
@@ -111,9 +102,22 @@ function App() {
     setGameMode(!gameMode);
   };
 
+  const handleGameEnd = (score) => {
+    if (!gameEnded) {
+      setRetrievedScore(score);
+      setScoreSubmission(true); 
+      setGameEnded(true); 
+    }
+  };
+
+  const handleClose = () => {
+    setScoreSubmission(false);
+    setGameEnded(false); // Reset game ended state
+  };
+
   return (
     <div className="app-container">
-            <div className="top-left-controls">
+      <div className="top-left-controls">
         <Toggle
           defaultChecked={gameMode}
           icons={false}
@@ -127,19 +131,33 @@ function App() {
         {BugIcon}
         {HelpIcon}
       </div>
-      {modal && <HelpModal onClose ={() => setModal(false)}/>}
-      {bugModal && <BugModal onClose ={() => setBugModal(false)}/>}
-      {soonModal && <ComingSoonModal onClose ={() => setSoonModal(false)}/>}
-      {trophyModal && <Leaderboard onClose ={() => setTrophyModal(false)}/>}
-      {gameMode ? <CompetitiveMode results={results} updateResults={updateResults}/> : <TestMe keybinds={keybinds} updateKeybinds={updateKeybinds} updateResults={updateResults} />}
+      {modal && <HelpModal onClose={() => setModal(false)} />}
+      {bugModal && <BugModal onClose={() => setBugModal(false)} />}
+      {soonModal && <ComingSoonModal onClose={() => setSoonModal(false)} />}
+      {trophyModal && <Leaderboard onClose={() => setTrophyModal(false)} />}
+      {scoreSubmission && (
+        <SubmitScoreModal
+          score={retrievedScore}
+          onClose={handleClose} // Pass the close handler
+        />
+      )}
+      {gameMode ? (
+        <CompetitiveMode
+          results={results}
+          updateResults={updateResults}
+          onGameEnd={handleGameEnd} // Passing the function as a prop
+        />
+      ) : (
+        <TestMe keybinds={keybinds} updateKeybinds={updateKeybinds} updateResults={updateResults} />
+      )}
       <div className="main-content">
         <div className="keyboard-section">
           <Keyboard />
           <div className={`recorded-binds-content ${!gameMode ? 'visible' : ''}`}>
-              <RecordedBinds keybinds={keybinds} updateKeybinds={updateKeybinds} />
-            </div>
+            <RecordedBinds keybinds={keybinds} updateKeybinds={updateKeybinds} />
+          </div>
         </div>
-        <Results results={results} updateResults={updateResults}/>
+        <Results results={results} updateResults={updateResults} />
       </div>
     </div>
   );

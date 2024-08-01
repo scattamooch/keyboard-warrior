@@ -3,9 +3,11 @@ import Sound from "react-sound";
 import beep from "../assets/sounds/beep-07a.mp3";
 import '../styles/Competitive.css';
 
-function CompetitiveMode({ results, updateResults }) {
+function CompetitiveMode({ results, updateResults, onGameEnd }) {
     const [keybinds, setKeybinds] = useState([]);
-    const [currentBind, setCurrentBind] = useState('');
+    const [currentKeybind, setCurrentKeybind] = useState('');
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [times, setTimes] = useState([]);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(30);
     const [gameStarted, setGameStarted] = useState(false);
@@ -30,31 +32,78 @@ function CompetitiveMode({ results, updateResults }) {
         return () => clearInterval(timer);
     }, [gameStarted, timeLeft]);
 
-    useEffect(() => {
-        if (keybinds.length > 0 && gameStarted) {
-            initializeBinds();
+    const formatKeybind = (event) => {
+        let key = event.code;
+        let keybind = '';
+    
+        if (event.ctrlKey && key !== 'ControlLeft' && key !== 'ControlRight') {
+            keybind += 'ctrl + ';
         }
-    }, [keybinds, gameStarted]);
-
-    const initializeBinds = () => {
-        const current = keybinds[0].bind;
-        setCurrentBind(current);
-        setStartTime(Date.now());
+        if (event.shiftKey && key !== 'ShiftLeft' && key !== 'ShiftRight') {
+            keybind += 'shift + ';
+        }
+        if (event.altKey && key !== 'AltLeft' && key !== 'AltRight') {
+            keybind += 'alt + ';
+        }
+    
+        keybind += key.replace('Key', '').replace('Digit', '');
+        return keybind;
     };
 
-    const updateBinds = () => {
-        const nextBind = keybinds[Math.floor(Math.random() * keybinds.length)].bind;
-        setCurrentBind(nextBind);
-        setStartTime(Date.now());
+    const selectRandomKeybind = () => {
+        const randomIndex = Math.floor(Math.random() * keybinds.length);
+        const selectedKeybind = keybinds[randomIndex];
+        setCurrentKeybind(selectedKeybind.bind);
+        setStartTime(new Date().getTime());
+        setElapsedTime(0);
     };
+
+    useEffect(() => {
+        let timer;
+        if (currentKeybind && gameStarted) {
+            const handleKeyDown = (event) => {
+                event.preventDefault();
+                if (event.key === 'Control' || event.key === 'Shift' || event.key === 'Alt') {
+                    return;
+                }
+                const keybind = formatKeybind(event);
+                console.log("Keypressed: ", keybind)
+    
+                if (keybind === currentKeybind) {
+                    const endTime = new Date().getTime();
+                    const timeTaken = (endTime - startTime) / 1000; //
+                    setTimes((prevTimes) => [...prevTimes, { keybind, timeTaken }]);
+                    updateResults((prevTimes) => [...prevTimes, { keybind, timeTaken }])
+                    setScore(prevScore => prevScore + 30);
+                    selectRandomKeybind();
+                } else if (score > 0) {
+                    setScore(prevScore => Math.max(prevScore - 10, 0));
+                }
+            };
+    
+            timer = setInterval(() => {
+                setElapsedTime((prevTime) => prevTime + 0.1);
+            }, 100);
+    
+            window.addEventListener('keydown', handleKeyDown);
+    
+            return () => {
+                clearInterval(timer);
+                window.removeEventListener('keydown', handleKeyDown);
+            };
+        }
+    
+        return () => clearInterval(timer);
+    }, [currentKeybind, startTime, gameStarted]);
 
     const handleStartClick = () => {
         if (!keybinds || keybinds.length === 0) {
             window.alert('Sorry, there seems to be an error at the moment. Please try again in a few moments.');
         } else {
             setCountdownStarted(true);
-            setTimeLeft(30);
+            setTimeLeft(5);
             setScore(0);
+            updateResults([]);
             startCountdown();
         }
     };
@@ -82,57 +131,25 @@ function CompetitiveMode({ results, updateResults }) {
     };
 
     const startTest = () => {
-        initializeBinds();
-        window.addEventListener('keydown', handleKeyPress);
+        selectRandomKeybind();
     };
 
     useEffect(() => {
-        if (timeLeft === 0) {
+        if (timeLeft === 0 && gameStarted) {
             setGameStarted(false);
-            window.removeEventListener('keydown', handleKeyPress);
+            onGameEnd(score); 
         }
-    }, [timeLeft]);
-
-    const handleKeyPress = (e) => {
-        e.preventDefault();
-        const keybind = formatKeybind(e);
-        console.log(`Pressed keybind: ${keybind}`);
-        console.log(`Expected keybind: ${currentBind}`);
-        if (keybind === currentBind) {
-            const endTime = Date.now();
-            const reactionTime = (endTime - startTime) / 1000;
-            updateResults([...results, { bind: currentBind, time: reactionTime }]);
-            setScore(prevScore => prevScore + 1);
-            updateBinds();
-        }
-    };
-
-    const formatKeybind = (event) => {
-        let key = event.code;
-        let keybind = '';
-
-        if (event.ctrlKey && key !== 'ControlLeft' && key !== 'ControlRight') {
-            keybind += 'ctrl + ';
-        }
-        if (event.shiftKey && key !== 'ShiftLeft' && key !== 'ShiftRight') {
-            keybind += 'shift + ';
-        }
-        if (event.altKey && key !== 'AltLeft' && key !== 'AltRight') {
-            keybind += 'alt + ';
-        }
-
-        keybind += key.replace('Key', '').replace('Digit', '');
-        return keybind;
-    };
+    }, [timeLeft, score, onGameEnd, gameStarted]);
 
     return (
+        
         <div className="top-container">
             {!gameStarted && <button className="start-button" onClick={handleStartClick}>
                 Begin
             </button>}
             <div className={`competitive-mode ${!gameStarted ? '' : 'visible'}`}>
                 <div>Time Left: {timeLeft}s</div>
-                <div>Current Keybind: {currentBind}</div>
+                <div>Current Keybind: {currentKeybind}</div>
                 <div>Score: {score}</div>
             </div>
             {playSound && (
