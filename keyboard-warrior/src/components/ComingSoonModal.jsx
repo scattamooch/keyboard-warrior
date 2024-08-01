@@ -22,6 +22,9 @@ function ComingSoonModal({ onClose }) {
                 <li className="soon-item">
                     Fixes for the ever-expanding bug list
                 </li>
+                <li className="soon-item">
+                    Multiple difficulties for competitive. Number/complexity of binds will scale up with difficulty, but will also award more points.
+                </li>
             </ol>
         </div>
       </div>
